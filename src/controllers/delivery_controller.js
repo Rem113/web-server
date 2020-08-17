@@ -4,20 +4,29 @@ const { getFromLatLon, getFromAddress } = require('../services/address_converter
 module.exports = {
     DeliveryController: async (req, res) => {
 
-        const { name, isFood, isMedicine, address, lat, lon } = req.body
+        var { name, isFood, isMedicine, address, lat, lon } = req.body
         console.log(req.body)
 
-        var data = "Chalom";
-
         if (address == null)
-            data = getFromLatLon(lat, lon)
+            data = await getFromLatLon(lat, lon)
         else
-            data = getFromAddress(address)
+            data = await getFromAddress(address)
 
-        console.log(data)
+        address = data.address
+        lat = data.coordinates[0]
+        lon = data.coordinates[1]
+        isFood = isFood === 'true'
+        isMedicine = isMedicine === 'true'
 
-        // Il faut mettre toutes les infos dans une variable
-        // et faire un Delivery.create(variable)
+        const delivery = { name, isFood, isMedicine, address, lat, lon }
+
+        console.log(delivery)
+
+        try {
+            await Delivery.create(delivery)
+        } catch (error) {
+            return res.status(400).end(error)
+        }
 
         return res.status(201).end(name + ' is OK')
     }
