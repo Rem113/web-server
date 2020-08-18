@@ -1,4 +1,5 @@
 const User = require("../models/user")
+const { json } = require("body-parser")
 
 const validate = ({ email, password, name, isManager }) => {
   if (email === undefined || email === "") return "Email cannot be empty"
@@ -24,5 +25,25 @@ module.exports = {
     }
 
     return res.status(201).end(name + " has been added successfully")
+  },
+
+  LoginController: async (req, res) => {
+    const { email, password } = req.body
+
+    console.log(email)
+
+    User.find({ email: email }, (err, user) => {
+      const userPassword = user[0].password
+
+      if (err) console.log(err)
+      else if (userPassword === password) console.log(email + " is logged")
+      else console.log("Don't makir oto")
+
+      res
+        .json({
+          connected: true,
+        })
+        .end()
+    })
   },
 }

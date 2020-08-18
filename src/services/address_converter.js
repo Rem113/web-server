@@ -1,34 +1,43 @@
-const http = require('http')
+const axios = require('axios')
 
 const TOKEN = process.env.BING_MAPS_TOKEN
 let url = 'http://dev.virtualearth.net/REST/v1/Locations'
 
-function getFromLatLon(lat, lon) {
-    url += `/${lat},${lon}?key=${TOKEN}`
+async function getFromLatLon(lat, lon) {
+    const query = url + `/${lat},${lon}?key=${TOKEN}`
 
-    http.get(url, (response) => {
-        response.on("data", (data) => {
-            const obj = JSON.parse(data)
-            console.log(obj.resourceSets[0].resources[0].address.formattedAddress)
-        })
-    })
+    return await getResult(query)
 }
 
-function getFromAddress(address) {
-    url += `?key=${TOKEN}&query=${address}`
-    http.get(url, (response) => {
-        response.on("data", (data) => {
-            const obj = JSON.parse(data)
+async function getFromAddress(address) {
+    const query = url + `?key=${TOKEN}&query=${address}`
 
-            // console.log(obj.resourceSets[0].resources[0].geocodePoints[0].coordinates)
-            // console.log(obj.resourceSets[0].resources[0].address.formattedAddress)
+    return await getResult(query)
+}
 
-            return ({
+async function getResult(url) {
+    var result = {
+        "coordinates": [0, 0],
+        "address": "ERROR",
+        "city": "ERROR"
+    };
+
+    console.log(url)
+    await axios.get(url).then(res => {
+        var obj = res['data']
+
+        try {
+            result = {
                 "coordinates": obj.resourceSets[0].resources[0].geocodePoints[0].coordinates,
-                "address": obj.resourceSets[0].resources[0].address.formattedAddress
-            })
-        })
-    })
+                "address": obj.resourceSets[0].resources[0].address.formattedAddress,
+                "city": obj.resourceSets[0].resources[0].address.locality
+            }
+        } catch (error) {
+
+        }
+    }).catch(err => console.error(err.response.data))
+
+    return result
 }
 
 module.exports = { getFromLatLon, getFromAddress }

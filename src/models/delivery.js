@@ -1,19 +1,24 @@
 const { Schema, model } = require("mongoose")
 
-const DeliverySchema = Schema({
+const DeliveryScheme = Schema({
   name: {
     type: String,
     required: true,
   },
   isFood: {
     type: Boolean,
+    default: false,
     required: true,
   },
   isMedicine: {
     type: Boolean,
+    default: false,
     required: true,
   },
   address: {
+    type: String,
+  },
+  city: {
     type: String,
   },
   lat: {
