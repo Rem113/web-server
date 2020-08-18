@@ -8,12 +8,10 @@ const DeliveryScheme = Schema({
   isFood: {
     type: Boolean,
     default: false,
-    required: true,
   },
   isMedicine: {
     type: Boolean,
     default: false,
-    required: true,
   },
   address: {
     type: String,
