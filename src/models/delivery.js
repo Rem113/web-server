@@ -7,14 +7,19 @@ const DeliveryScheme = Schema({
     },
     isFood: {
         type: Boolean,
-        required: true,
+        default: false,
+        required: true
     },
     isMedicine: {
         type: Boolean,
-        required: true,
+        default: false,
+        required: true
     },
     address: {
         type: String,
+    },
+    city: {
+        type: String
     },
     lat: {
         type: Number

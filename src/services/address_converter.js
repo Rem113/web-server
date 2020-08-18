@@ -19,9 +19,11 @@ async function getFromAddress(address) {
 async function getResult(url) {
     var result = {}
 
+    console.log(url)
     await axios.get(url).then(res => {
         var obj = res['data']
 
+        // console.log(obj.resourceSets[0].resources[0])
         try {
             result = {
                 "coordinates": obj.resourceSets[0].resources[0].geocodePoints[0].coordinates,

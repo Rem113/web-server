@@ -23,7 +23,7 @@ module.exports = {
         console.log(delivery)
 
         try {
-            await Delivery.create(delivery)
+            //await Delivery.create(delivery)
         } catch (error) {
             return res.status(400).end(error)
         }
