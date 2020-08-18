@@ -12,18 +12,19 @@ module.exports = {
         else
             data = await getFromAddress(address)
 
+        var city = data.city
         address = data.address
         lat = data.coordinates[0]
         lon = data.coordinates[1]
+
         isFood = isFood === 'true'
         isMedicine = isMedicine === 'true'
 
-        const delivery = { name, isFood, isMedicine, address, lat, lon }
-
+        const delivery = { name, isFood, isMedicine, address, city, lat, lon }
         console.log(delivery)
 
         try {
-            //await Delivery.create(delivery)
+            await Delivery.create(delivery)
         } catch (error) {
             return res.status(400).end(error)
         }

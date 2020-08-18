@@ -1,42 +1,41 @@
-const http = require('http')
 const axios = require('axios')
 
 const TOKEN = process.env.BING_MAPS_TOKEN
 let url = 'http://dev.virtualearth.net/REST/v1/Locations'
 
 async function getFromLatLon(lat, lon) {
-    url += `/${lat},${lon}?key=${TOKEN}`
+    const query = url + `/${lat},${lon}?key=${TOKEN}`
 
-    return await getResult(url)
+    return await getResult(query)
 }
 
 async function getFromAddress(address) {
-    url += `?key=${TOKEN}&query=${address}`
+    const query = url + `?key=${TOKEN}&query=${address}`
 
-    return await getResult(url)
+    return await getResult(query)
 }
 
 async function getResult(url) {
-    var result = {}
+    var result = {
+        "coordinates": [0, 0],
+        "address": "ERROR",
+        "city": "ERROR"
+    };
 
     console.log(url)
     await axios.get(url).then(res => {
         var obj = res['data']
 
-        // console.log(obj.resourceSets[0].resources[0])
         try {
             result = {
                 "coordinates": obj.resourceSets[0].resources[0].geocodePoints[0].coordinates,
-                "address": obj.resourceSets[0].resources[0].address.formattedAddress
+                "address": obj.resourceSets[0].resources[0].address.formattedAddress,
+                "city": obj.resourceSets[0].resources[0].address.locality
             }
         } catch (error) {
-            console.error(error)
-            result = {
-                "coordinates": [0, 0],
-                "address": "ERROR"
-            }
+
         }
-    })
+    }).catch(err => console.error(err.response.data))
 
     return result
 }
