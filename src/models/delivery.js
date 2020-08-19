@@ -27,4 +27,4 @@ const DeliveryScheme = Schema({
   },
 })
 
-module.exports = model("Delivery", DeliverySchema, "Deliveries")
+module.exports = model("Delivery", DeliveryScheme, "Deliveries")

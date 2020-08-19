@@ -1,7 +1,6 @@
 const User = require("../models/user")
-const { json } = require("body-parser")
 
-const validate = ({ email, password, name, isManager }) => {
+const validate = ({ email, password, name }) => {
   if (email === undefined || email === "") return "Email cannot be empty"
 
   if (password === undefined || password === "")
@@ -14,36 +13,56 @@ const validate = ({ email, password, name, isManager }) => {
 
 module.exports = {
   RegisterController: async (req, res) => {
-    const maybeError = validate(req.body)
+    let [connected, error, user] = [false, validate(req.body), null];
 
-    if (maybeError) return res.status(400).end(maybeError)
-
-    try {
-      await User.create(req.body)
-    } catch (error) {
-      return res.status(500).end(error)
+    if (error !== null) {
+      return res.json({
+        connected: connected,
+        error: error,
+        user: [user]
+      }).end()
     }
 
-    return res.status(201).end(name + " has been added successfully")
+    await User.create(req.body, (err, usr) => {
+      if (err)
+        error = err;
+      else {
+        user = usr
+        connected = true
+      }
+    })
+
+    res.json({
+      connected: connected,
+      error: error,
+      user: [user]
+    }).end()
   },
 
   LoginController: async (req, res) => {
-    const { email, password } = req.body
+    const { email, password } = req.body;
 
-    console.log(email)
+    User.findOne({ email: email }, (err, user) => {
 
-    User.find({ email: email }, (err, user) => {
-      const userPassword = user[0].password
+      let [connected, error] = [false, null];
 
-      if (err) console.log(err)
-      else if (userPassword === password) console.log(email + " is logged")
-      else console.log("Don't makir oto")
+      if (err) {
+        console.log(err)
+        error = err
+      }
+      else if (user === null) {
+        error = email + ' account doesn\'t exists'
+      } else if (user.password !== password) {
+        error = 'Incorrect Password'
+      } else {
+        connected = true
+      }
 
-      res
-        .json({
-          connected: true,
-        })
-        .end()
+      res.json({
+        connected: connected,
+        error: error,
+        user: [user]
+      }).end()
     })
   },
 }
