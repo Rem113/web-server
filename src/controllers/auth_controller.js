@@ -13,30 +13,29 @@ const validate = ({ email, password, name }) => {
 
 module.exports = {
   RegisterController: async (req, res) => {
+
     let [connected, error, user] = [false, validate(req.body), null];
 
-    if (error !== null) {
-      return res.json({
-        connected: connected,
-        error: error,
-        user: [user]
-      }).end()
-    }
-
-    await User.create(req.body, (err, usr) => {
-      if (err)
-        error = err;
-      else {
-        user = usr
-        connected = true
-      }
-    })
-
-    res.json({
+    var response = {
       connected: connected,
       error: error,
       user: [user]
-    }).end()
+    };
+
+    if (error !== null)
+      return res.json(response).end()
+
+    User.create(req.body, (err, usr) => {
+      if (err) {
+        response.error = "An account with the same email already exists";
+        return res.json(response).end()
+      }
+      else {
+        response.connected = true;
+        response.user = [usr]
+        return res.json(response).end()
+      }
+    })
   },
 
   LoginController: async (req, res) => {
