@@ -1,21 +1,21 @@
-const { Schema, model } = require('mongoose')
+const { Schema, model } = require("mongoose")
 
-const PostShema = Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    body: {
-        type: String,
-        required: true
-    },
-    postedAt: {
-        type: Date,
-        default: Date.now,
-    },
-    replyTo: {
-        type: String
-    }
+const PostSchema = Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  body: {
+    type: String,
+    required: true,
+  },
+  postedAt: {
+    type: Date,
+    default: Date.now,
+  },
+  replyTo: {
+    type: String,
+  },
 })
 
-module.exports = model("Post", PostShema, "Posts")
+module.exports = model("Post", PostSchema, "Posts")

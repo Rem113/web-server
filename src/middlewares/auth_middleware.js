@@ -2,7 +2,9 @@ const jwt = require("jsonwebtoken")
 
 const User = require("../models/user")
 
+// Auth middleware - forwards authenticated user, adds user document in req.user
 module.exports = async (req, res, next) => {
+  // Checks for bearer token
   const { authorization } = req.headers
 
   if (authorization === undefined || !authorization.startsWith("Bearer "))
@@ -12,6 +14,7 @@ module.exports = async (req, res, next) => {
 
   let payload
 
+  // Check that the token is valid
   try {
     payload = jwt.verify(token, process.env.TOKEN_SECRET)
   } catch (err) {
@@ -22,9 +25,12 @@ module.exports = async (req, res, next) => {
     else throw err
   }
 
+  // Get the associated user
   const user = await User.findById(payload.id)
 
   if (user === null) return res.status(401).end("Unknown user")
+
+  // Sets req.user, then forwards request
   req.user = user
   next()
 }

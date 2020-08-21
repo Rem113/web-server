@@ -22,7 +22,6 @@ async function getResult(url) {
     city: "ERROR",
   }
 
-  console.log(url)
   await axios
     .get(url)
     .then((res) => {

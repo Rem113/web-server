@@ -21,10 +21,12 @@ const validate = ({ email, password, name, age }) => {
 
 module.exports = {
   RegisterController: async (req, res) => {
+    // Validate input
     const errors = validate(req.body)
 
     if (errors !== null) return res.status(400).json(errors)
 
+    // Check if the email is available
     const existingUser = await User.findOne({ email: req.body.email })
 
     if (existingUser !== null)
@@ -32,6 +34,7 @@ module.exports = {
         .status(409)
         .json({ email: "An account with this email already exists" })
 
+    // Hash password, then create user
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
@@ -41,6 +44,7 @@ module.exports = {
   },
 
   LoginController: async (req, res) => {
+    // Checks that the user exist
     const user = await User.findOne({ email: req.body.email })
 
     if (user === null)
@@ -48,11 +52,13 @@ module.exports = {
         .status(404)
         .json({ email: "There is no account associated with this email" })
 
+    // Compare password hash
     const passwordMatch = await bcrypt.compare(req.body.password, user.password)
 
     if (!passwordMatch)
       return res.status(400).json({ password: "The password is invalid" })
 
+    // Create JWT, then return it
     const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET, {
       expiresIn: 3600 * 24,
     })

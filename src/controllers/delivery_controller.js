@@ -7,29 +7,18 @@ const {
 
 module.exports = {
   DeliveryController: async (req, res) => {
-    let { name, isFood, isMedicine, address, lat, lon } = req.body
-    console.log(req.body)
+    let { address, lat, lon } = req.body
 
-    if (address == null) data = await getFromLatLon(lat, lon)
-    else data = await getFromAddress(address)
+    if (address === undefined && (lat === undefined || lon === undefined))
+      return res.status(400).end("Please specify either address or coordinates")
 
-    let city = data.city
-    address = data.address
-    lat = data.coordinates[0]
-    lon = data.coordinates[1]
+    const data =
+      address === undefined
+        ? await getFromLatLon(lat, lon)
+        : await getFromAddress(address)
 
-    isFood = isFood === "true"
-    isMedicine = isMedicine === "true"
+    await Delivery.create({ ...req.body, ...data })
 
-    const delivery = { name, isFood, isMedicine, address, city, lat, lon }
-    console.log(delivery)
-
-    try {
-      await Delivery.create(delivery)
-    } catch (error) {
-      return res.status(400).end(error)
-    }
-
-    return res.status(201).end(name + " is OK")
+    return res.status(201).end()
   },
 }
