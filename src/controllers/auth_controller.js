@@ -1,12 +1,14 @@
 const User = require("../models/user")
 
-const validate = ({ email, password, name }) => {
+const validate = ({ email, password, name, age }) => {
   if (email === undefined || email === "") return "Email cannot be empty"
 
   if (password === undefined || password === "")
     return "Password cannot be empty"
 
   if (name === undefined || name === "") return "Name cannot be empty"
+
+  if (age === undefined || age < 0) return "Age cannot be empty"
 
   return null
 }
