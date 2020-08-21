@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
 
 const User = require("../models/user")
-const bcryptjs = require("bcryptjs")
 
 const validate = ({ email, password, name, age }) => {
   const errors = {}
@@ -53,6 +53,10 @@ module.exports = {
     if (!passwordMatch)
       return res.status(400).json({ password: "The password is invalid" })
 
-    return res.status(200).json({ id: user.id })
+    const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET, {
+      expiresIn: 3600 * 24,
+    })
+
+    return res.status(200).json(token)
   },
 }
