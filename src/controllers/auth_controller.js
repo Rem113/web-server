@@ -1,67 +1,56 @@
+const bcrypt = require("bcryptjs")
+
 const User = require("../models/user")
+const bcryptjs = require("bcryptjs")
 
 const validate = ({ email, password, name }) => {
-  if (email === undefined || email === "") return "Email cannot be empty"
+  const errors = {}
+
+  if (email === undefined || email === "")
+    errors.email = "Email cannot be empty"
 
   if (password === undefined || password === "")
-    return "Password cannot be empty"
+    errors.password = "Password cannot be empty"
 
-  if (name === undefined || name === "") return "Name cannot be empty"
+  if (name === undefined || name === "") errors.name = "Name cannot be empty"
 
-  return null
+  return Object.keys(errors).length > 0 ? errors : null
 }
 
 module.exports = {
   RegisterController: async (req, res) => {
+    const errors = validate(req.body)
 
-    let [connected, error, user] = [false, validate(req.body), null];
+    if (errors !== null) return res.status(400).json(errors)
 
-    var response = {
-      connected: connected,
-      error: error,
-      user: [user]
-    };
+    const existingUser = await User.findOne({ email: req.body.email })
 
-    if (error !== null)
-      return res.json(response).end()
+    if (existingUser !== null)
+      return res
+        .status(409)
+        .json({ email: "An account with this email already exists" })
 
-    User.create(req.body, (err, usr) => {
-      if (err) {
-        response.error = "An account with the same email already exists";
-        return res.json(response).end()
-      }
-      else {
-        response.connected = true;
-        response.user = [usr]
-        return res.json(response).end()
-      }
-    })
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(req.body.password, salt)
+
+    const user = await User.create({ ...req.body, password: hashedPassword })
+
+    return res.status(201).json({ id: user.id })
   },
 
   LoginController: async (req, res) => {
-    const { email, password } = req.body;
+    const user = await User.findOne({ email: req.body.email })
 
-    User.findOne({ email: email }, (err, user) => {
+    if (user === null)
+      return res
+        .status(404)
+        .json({ email: "There is no account associated with this email" })
 
-      let [connected, error] = [false, null];
+    const passwordMatch = await bcrypt.compare(req.body.password, user.password)
 
-      if (err) {
-        console.log(err)
-        error = err
-      }
-      else if (user === null) {
-        error = email + ' account doesn\'t exists'
-      } else if (user.password !== password) {
-        error = 'Incorrect Password'
-      } else {
-        connected = true
-      }
+    if (!passwordMatch)
+      return res.status(400).json({ password: "The password is invalid" })
 
-      res.json({
-        connected: connected,
-        error: error,
-        user: [user]
-      }).end()
-    })
+    return res.status(200).json({ id: user.id })
   },
 }
