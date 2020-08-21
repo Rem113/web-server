@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs")
 const User = require("../models/user")
 const bcryptjs = require("bcryptjs")
 
-const validate = ({ email, password, name }) => {
+const validate = ({ email, password, name, age }) => {
   const errors = {}
 
   if (email === undefined || email === "")
@@ -13,6 +13,8 @@ const validate = ({ email, password, name }) => {
     errors.password = "Password cannot be empty"
 
   if (name === undefined || name === "") errors.name = "Name cannot be empty"
+
+  if (age === undefined || age < 0) errors.age = "Age cannot be empty"
 
   return Object.keys(errors).length > 0 ? errors : null
 }
