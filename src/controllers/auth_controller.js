@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken")
 
 const User = require("../models/user")
 
-const validate = ({ email, password, name, age }) => {
+const validateRegisterInput = ({ email, password, name, age }) => {
   const errors = {}
 
   if (email === undefined || email === "")
@@ -19,10 +19,22 @@ const validate = ({ email, password, name, age }) => {
   return Object.keys(errors).length > 0 ? errors : null
 }
 
+const validateLoginInput = ({ email, password }) => {
+  const errors = {}
+
+  if (email === undefined || email === "")
+    errors.email = "Email cannot be empty"
+
+  if (password === undefined || password === "")
+    errors.password = "Password cannot be empty"
+
+  return Object.keys(errors).length > 0 ? errors : null
+}
+
 module.exports = {
   RegisterController: async (req, res) => {
     // Validate input
-    const errors = validate(req.body)
+    const errors = validateRegisterInput(req.body)
 
     if (errors !== null) return res.status(400).json(errors)
 
@@ -44,6 +56,11 @@ module.exports = {
   },
 
   LoginController: async (req, res) => {
+    // Validate input
+    const errors = validateLoginInput(req.body)
+
+    if (errors !== null) return res.status(400).json(errors)
+
     // Checks that the user exist
     const user = await User.findOne({ email: req.body.email })
 
@@ -63,6 +80,6 @@ module.exports = {
       expiresIn: 3600 * 24,
     })
 
-    return res.status(200).json(token)
+    return res.status(200).json({ token, name: user.name })
   },
 }
