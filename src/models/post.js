@@ -1,5 +1,16 @@
 const { Schema, model } = require("mongoose")
 
+const CommentSchema = Schema({
+  name: {
+    type: String,
+    default: "Anonyme",
+  },
+  text: {
+    type: String,
+    required: true,
+  },
+})
+
 const PostSchema = Schema({
   title: {
     type: String,
@@ -12,7 +23,8 @@ const PostSchema = Schema({
   postedAt: {
     type: Date,
     default: Date.now,
-  }
+  },
+  comments: [CommentSchema],
 })
 
 module.exports = model("Post", PostSchema, "Posts")
