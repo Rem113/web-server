@@ -35,4 +35,14 @@ module.exports = {
 
     return res.status(200).json({ posts, pages })
   },
+
+  GetPostById: async (req, res) => {
+    const { id } = req.params
+
+    const post = await Post.findById(id)
+
+    if (post === null) return res.status(404).end()
+
+    return res.status(200).json(post)
+  },
 }
