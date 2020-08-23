@@ -24,11 +24,11 @@ module.exports = {
   },
 
   GetPosts: async (req, res) => {
-    const page = req.body.page - 1 || 0
+    const offset = (req.body.page - 1) * 10 || 0
 
     const posts = await Post.find()
       .sort({ postedAt: -1 })
-      .skip(page * 10)
+      .skip(offset)
       .limit(10)
 
     return res.status(200).json(posts)
