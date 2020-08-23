@@ -25,16 +25,21 @@ module.exports = {
     },
 
     GetPost: async (req, res) => {
-        Post.aggregate({},)
+        // Post.aggregate([{}, { $sort: { _id: null, title: 1 } }]).exec(function (err, docs) {
+        //     if (err) { console.error(err); return res.status(404) }
+        //     else {
+        //         console.log(docs)
+        //         return res.status(200).json(docs)
+        //     }
+        // })
 
-
-        { }, (err, docs) => {
+        Post.find({}, (err, docs) => {
             if (err) { console.error(err); return res.status(404) }
             else {
                 console.log(docs)
                 return res.status(200).json(docs)
             }
-        }
+        })
     }
 
 }
