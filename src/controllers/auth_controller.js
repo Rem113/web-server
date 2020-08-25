@@ -80,6 +80,8 @@ module.exports = {
       expiresIn: 3600 * 24,
     })
 
-    return res.status(200).json({ token, name: user.name })
+    return res
+      .status(200)
+      .json({ token, name: user.name, isManager: user.isManager })
   },
 }
