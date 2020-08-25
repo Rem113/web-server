@@ -13,14 +13,16 @@ const validateRegisterInput = ({ title, content }) => {
 }
 
 module.exports = {
-  PostPost: async (req, res) => {
+  WritePost: async (req, res) => {
+    if (req.user.isManager === false) return res.status(403).end()
+
     const errors = validateRegisterInput(req.body)
 
     if (errors !== null) return res.status(400).json(errors)
 
-    await Post.create(req.body)
+    const post = await Post.create(req.body)
 
-    return res.status(201).end()
+    return res.status(201).json({ id: post.id })
   },
 
   GetPosts: async (req, res) => {
