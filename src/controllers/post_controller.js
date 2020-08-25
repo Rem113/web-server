@@ -14,6 +14,8 @@ const validateRegisterInput = ({ title, content }) => {
 
 module.exports = {
   PostPost: async (req, res) => {
+    console.log(req.body)
+
     const errors = validateRegisterInput(req.body)
 
     if (errors !== null) return res.status(400).json(errors)
@@ -21,6 +23,23 @@ module.exports = {
     await Post.create(req.body)
 
     return res.status(201).end()
+  },
+
+  PostComment: async (req, res) => {
+    const { id } = req.params
+
+    console.log(id, req.body)
+
+    Post.findById(id, (err, post) => {
+      if (err)
+        return res.status(404).json("Any post associated with this ID")
+      else {
+        post.comments.push(req.body)
+        post.save()
+        return res.status(200).end()
+      }
+    })
+
   },
 
   GetPosts: async (req, res) => {
