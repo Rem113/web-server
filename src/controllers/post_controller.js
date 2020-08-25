@@ -28,8 +28,6 @@ module.exports = {
   PostComment: async (req, res) => {
     const { id } = req.params
 
-    console.log(id, req.body)
-
     Post.findById(id, (err, post) => {
       if (err)
         return res.status(404).json("Any post associated with this ID")
@@ -39,7 +37,6 @@ module.exports = {
         return res.status(200).end()
       }
     })
-
   },
 
   GetPosts: async (req, res) => {
@@ -61,6 +58,8 @@ module.exports = {
     const post = await Post.findById(id)
 
     if (post === null) return res.status(404).end()
+
+    post.comments.sort((a, b) => a.postedAt < b.postedAt ? 1 : -1)
 
     return res.status(200).json(post)
   },
