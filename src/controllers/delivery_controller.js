@@ -5,18 +5,9 @@ const { getFromAddress } = require("../services/address_converter")
 /* Validation */
 /*
    - At least one between isFood and isMedicine must be true
-   - Address or lat and lon or addresses or lats and lons should be defined
+   - Addresses must not be empty
 */
-const validateDeliveryData = ({
-  isFood,
-  isMedicine,
-  address,
-  addresses,
-  lat,
-  lats,
-  lon,
-  lons,
-}) => {
+const validateDeliveryData = ({ isFood, isMedicine, addresses }) => {
   const errors = {}
 
   if (isFood === undefined && isMedicine === undefined) {
@@ -24,13 +15,8 @@ const validateDeliveryData = ({
     errors.isMedicine = "Please select at least one type of delivery"
   }
 
-  if (
-    address === undefined &&
-    (lat === undefined || lon === undefined) &&
-    addresses === undefined &&
-    (lats === undefined || lons === undefined)
-  )
-    errors.address = "Please specify at least one address or coordinates"
+  if (addresses === undefined || addresses.length === 0)
+    errors.addresses = "Please specify at least one address or coordinates"
 
   return Object.keys(errors).length > 0 ? errors : null
 }
@@ -44,27 +30,16 @@ module.exports = {
     const deliveryData = {}
 
     // Figure out the locations
-    const { address, lat, lon, addresses, lats, lons } = req.body
+    const { addresses } = req.body
 
-    if (address !== undefined) {
-      const {
-        coordinates: [lat, lon],
-      } = await getFromAddress(address)
-      deliveryData.addresses = [{ lat, lon }]
-    } else if (lat !== undefined && lon !== undefined) {
-      deliveryData.addresses = [{ lat, lon }]
-    } else if (addresses !== undefined) {
-      deliveryData.addresses = await Promise.all(
-        addresses.map((address) =>
-          getFromAddress(address).then(({ coordinates: [lat, lon] }) => ({
-            lat,
-            lon,
-          }))
-        )
+    deliveryData.addresses = await Promise.all(
+      addresses.map((address) =>
+        getFromAddress(address).then(({ coordinates: [lat, lon] }) => ({
+          lat,
+          lon,
+        }))
       )
-    } else {
-      deliveryData.addresses = lats.map((lat, i) => ({ lat, lon: lons[i] }))
-    }
+    )
 
     // Delivery dates
     const { dates } = req.body
