@@ -5,5 +5,6 @@ const router = Router()
 
 router.post("/register", AuthController.RegisterController)
 router.post("/login", AuthController.LoginController)
+router.put("/promote/to/manager", AuthController.PromoteToManager)
 
 module.exports = router

@@ -84,4 +84,16 @@ module.exports = {
       .status(200)
       .json({ token, name: user.name, isManager: user.isManager })
   },
+
+  PromoteToManager: async (req, res) => {
+    const user = req.user
+
+    if (user.isManager === true) return res.status(200).end()
+
+    user.isManager = true
+
+    await User.save(user)
+
+    return res.status(200).end()
+  },
 }

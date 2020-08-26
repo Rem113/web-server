@@ -29,8 +29,7 @@ module.exports = {
     const { id } = req.params
 
     Post.findById(id, (err, post) => {
-      if (err)
-        return res.status(404).json("Any post associated with this ID")
+      if (err) return res.status(404).json("There is no post with this ID")
       else {
         post.comments.push(req.body)
         post.save()
@@ -59,7 +58,7 @@ module.exports = {
 
     if (post === null) return res.status(404).end()
 
-    post.comments.sort((a, b) => a.postedAt < b.postedAt ? 1 : -1)
+    post.comments.sort((a, b) => (a.postedAt < b.postedAt ? 1 : -1))
 
     return res.status(200).json(post)
   },
