@@ -104,5 +104,17 @@ module.exports = {
       else
         return res.status(200).json(users)
     })
+  },
+
+  PutDelivers: async (req, res) => {
+    const oldDelivers = req.body
+
+    oldDelivers.forEach(element => {
+      User.findByIdAndUpdate(element._id, element, (err, ress) => {
+        if (err) console.error(err)
+      })
+    });
+
+    return res.status(200).end()
   }
 }

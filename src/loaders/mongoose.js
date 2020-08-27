@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+mongoose.set('useFindAndModify', false);
 
 module.exports = async () => {
   mongoose.set("useCreateIndex", true)
