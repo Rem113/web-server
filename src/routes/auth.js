@@ -11,5 +11,6 @@ router.put(
   AuthMiddleware,
   AuthController.PromoteToManager
 )
+router.get("/delivers", AuthController.GetDelivers)
 
 module.exports = router
