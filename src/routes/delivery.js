@@ -4,6 +4,6 @@ const DeliveryController = require("../controllers/delivery_controller")
 const router = Router()
 
 router.post("/", DeliveryController.ScheduleDelivery)
-router.get("/deliverers", DeliveryController.GetDeliverers)
+router.get("/delivers", DeliveryController.GetDelivers)
 
 module.exports = router

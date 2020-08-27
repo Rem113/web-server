@@ -59,7 +59,7 @@ module.exports = {
     return res.status(201).json({ id: delivery.id })
   },
 
-  GetDeliverers: async (req, res) => {
+  GetDelivers: async (req, res) => {
     await User.find(
       { isManager: "false" },
       ["name", "age", "email"],
