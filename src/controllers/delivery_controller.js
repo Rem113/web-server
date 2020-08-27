@@ -58,4 +58,15 @@ module.exports = {
 
     return res.status(201).json({ id: delivery.id })
   },
+
+  GetDeliverers: async (req, res) => {
+    await User.find(
+      { isManager: "false" },
+      ["name", "age", "email"],
+      (err, users) => {
+        if (err) return res.status(404)
+        else return res.status(200).json(users)
+      }
+    )
+  },
 }
