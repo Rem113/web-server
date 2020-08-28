@@ -97,7 +97,7 @@ module.exports = {
     return res.status(200).end()
   },
 
-  GetDelivers: async (req, res) => {
+  GetDeliverers: async (req, res) => {
     await User.find({ isManager: "false" }, ['name', 'age', 'email'], (err, users) => {
       if (err)
         return res.status(404)
@@ -106,7 +106,7 @@ module.exports = {
     })
   },
 
-  PutDelivers: async (req, res) => {
+  PutDeliverers: async (req, res) => {
     const oldDelivers = req.body
 
     oldDelivers.forEach(element => {
