@@ -1,8 +1,11 @@
 const http = require('http')
-const io = require('socket.io')(3005)
+const socketIO = require('socket.io')
 
 module.exports = (app) => {
-    io.on("connection", (socket) => {
-        socket.emit('message', 'bouffon de ta mère');
+    const server = http.createServer(app)
+    const io = socketIO(server);
+
+    io.on('connection', (socket) => {
+        console.log('New client connected')
     })
 }

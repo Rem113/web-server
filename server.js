@@ -10,7 +10,7 @@ const main = async () => {
   app.listen(PORT, () => console.log(`🚀 Server started on port ${PORT}`))
   await expressLoader(app)
   await mongoLoader()
-  await socketio(app)
+  socketio(app)
 }
 
 main()
