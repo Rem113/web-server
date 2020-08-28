@@ -107,9 +107,9 @@ module.exports = {
   },
 
   PutDeliverers: async (req, res) => {
-    const oldDelivers = req.body
+    const oldDeliverers = req.body
 
-    oldDelivers.forEach(element => {
+    oldDeliverers.forEach(element => {
       User.findByIdAndUpdate(element._id, element, (err, ress) => {
         if (err) console.error(err)
       })
