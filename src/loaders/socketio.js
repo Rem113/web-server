@@ -1,5 +1,15 @@
 const io = require("socket.io")
 
 module.exports = (http) => {
-  io(http).on("connection", () => console.log("New connection"))
+  const socket = io(http)
+
+  socket.on("connection", (client) => {
+    client.on("start", (user) => {
+      client.broadcast.emit("info", { user, info: " has joined!" })
+
+      client.on("message", (message) => {
+        socket.sockets.emit("message", { user, message })
+      })
+    })
+  })
 }
