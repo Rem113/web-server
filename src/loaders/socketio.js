@@ -1,5 +1,11 @@
 const io = require("socket.io")
 
 module.exports = (http) => {
-  io(http).on("connection", () => console.log("New connection"))
+    const server = io(http)
+    server.on("connection", (socket) => {
+        console.log("💬 New connection")
+        socket.on('isManager', data => {
+            console.log(data)
+        })
+    })
 }
