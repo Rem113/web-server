@@ -7,7 +7,6 @@ module.exports = (http) => {
 
   socket.on("connection", (client) => {
     client.on("start", ({ user, isManager }) => {
-      console.log(`💬 ${user} has joined!`)
       client.broadcast.emit("info", {
         date: new Date(),
         user,
