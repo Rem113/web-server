@@ -17,5 +17,6 @@ router.put(
   IsManager,
   DeliveryController.DispatchDeliveries
 )
+router.put("/:id", Authenticate, IsManager, DeliveryController.UpdateDeliverer)
 
 module.exports = router

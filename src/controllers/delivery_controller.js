@@ -115,4 +115,12 @@ module.exports = {
 
     return res.status(200).end()
   },
+
+  UpdateDeliverer: async (req, res) => {
+    const { id } = req.params
+
+    const user = await User.findByIdAndUpdate(id, req.body)
+
+    return res.status(200).json(user)
+  },
 }
