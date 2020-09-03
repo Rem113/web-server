@@ -61,9 +61,6 @@ module.exports = {
     // Additional info
     const { food, medicine } = req.body
 
-    data.food = food
-    data.medicine = medicine
-
     // Create addresses x dates deliveries
     const created = []
 
@@ -73,8 +70,8 @@ module.exports = {
           Delivery.create({
             address,
             date,
-            food: data.food,
-            medicine: data.medicine,
+            food,
+            medicine,
           })
         )
 
