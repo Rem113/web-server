@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose")
+const { Schema, model, ObjectId } = require("mongoose")
 
 const AddressSchema = Schema({
   _id: false,
@@ -9,6 +9,7 @@ const AddressSchema = Schema({
 const DeliverySchema = Schema({
   address: AddressSchema,
   date: { type: Date, required: true },
+  deliverer: { type: ObjectId, ref: "Users", required: false },
   done: { type: Boolean, default: false },
   food: { type: Boolean, default: false },
   medicine: { type: Boolean, default: false },

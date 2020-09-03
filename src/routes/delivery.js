@@ -12,10 +12,10 @@ router.get(
   DeliveryController.GetDeliverers
 )
 router.put(
-  "/calculate",
+  "/dispatch",
   Authenticate,
   IsManager,
-  DeliveryController.CalculateDeliveries
+  DeliveryController.DispatchDeliveries
 )
 
 module.exports = router

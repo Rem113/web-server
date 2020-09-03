@@ -82,39 +82,18 @@ module.exports = {
 
     return res
       .status(200)
-      .json({ token, name: user.name, isManager: user.isManager })
+      .json({ token, name: user.name, manager: user.manager })
   },
 
   PromoteToManager: async (req, res) => {
     const user = req.user
 
-    if (user.isManager === true) return res.status(200).end()
+    if (user.manager === true) return res.status(200).end()
 
-    user.isManager = true
+    user.manager = true
 
     await User.save(user)
 
     return res.status(200).end()
   },
-
-  GetDeliverers: async (req, res) => {
-    await User.find({ isManager: "false" }, ['name', 'age', 'email'], (err, users) => {
-      if (err)
-        return res.status(404)
-      else
-        return res.status(200).json(users)
-    })
-  },
-
-  PutDeliverers: async (req, res) => {
-    const oldDeliverers = req.body
-
-    oldDeliverers.forEach(element => {
-      User.findByIdAndUpdate(element._id, element, (err, ress) => {
-        if (err) console.error(err)
-      })
-    });
-
-    return res.status(200).end()
-  }
 }

@@ -1,6 +1,8 @@
 const R = require("ramda")
+const skmeans = require("skmeans")
 
 const Delivery = require("../models/delivery")
+const User = require("../models/user")
 const { getFromAddress } = require("../services/address_converter")
 
 /* Validation */
@@ -84,7 +86,7 @@ module.exports = {
     return res.status(200).json(users)
   },
 
-  CalculateDeliveries: async (req, res) => {
+  DispatchDeliveries: async (req, res) => {
     const today = createDate()
 
     // Get deliveries for today
@@ -93,6 +95,24 @@ module.exports = {
       date: today,
     })
 
-    return res.status(200).json(deliveries)
+    // Get deliverers
+    const deliverers = await User.find({
+      manager: false,
+    })
+
+    // Calculate centroids
+    const data = deliveries.map(({ address }) => [address.lat, address.lon])
+
+    const result = skmeans(data, deliverers.length)
+
+    // Update deliveries
+    deliveries.forEach(
+      async (delivery, index) =>
+        await Delivery.findByIdAndUpdate(delivery.id, {
+          deliverer: deliverers[result.idxs[index]].id,
+        })
+    )
+
+    return res.status(200).end()
   },
 }
