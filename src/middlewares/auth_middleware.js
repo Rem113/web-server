@@ -2,8 +2,7 @@ const jwt = require("jsonwebtoken")
 
 const User = require("../models/user")
 
-// Auth middleware - forwards authenticated user, adds user document in req.user
-module.exports = async (req, res, next) => {
+const Authenticate = async (req, res, next) => {
   // Checks for bearer token
   const { authorization } = req.headers
 
@@ -33,4 +32,17 @@ module.exports = async (req, res, next) => {
   // Sets req.user, then forwards request
   req.user = user
   next()
+}
+
+const IsManager = async (req, res, next) => {
+  if (req.user.isManager === false)
+    return res.status(403).end("You must be a manager")
+
+  next()
+}
+
+// Auth middleware - forwards authenticated user, adds user document in req.user
+module.exports = {
+  Authenticate,
+  IsManager,
 }

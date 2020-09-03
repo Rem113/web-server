@@ -1,10 +1,10 @@
 const { Router } = require("express")
 const PostController = require("../controllers/post_controller")
-const AuthMiddleware = require("../middlewares/auth_middleware")
+const { Authenticate } = require("../middlewares/auth_middleware")
 
 const router = Router()
 
-router.post("/", AuthMiddleware, PostController.WritePost)
+router.post("/", Authenticate, PostController.WritePost)
 router.get("/", PostController.GetPosts)
 
 router.post("/:id", PostController.PostComment)
