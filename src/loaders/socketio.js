@@ -6,17 +6,17 @@ module.exports = (http) => {
   var messages = []
 
   socket.on("connection", (client) => {
-    client.on("start", ({ user, isManager }) => {
+    client.on("start", ({ user, manager }) => {
       client.broadcast.emit("info", {
         date: new Date(),
         user,
-        isManager,
+        manager,
         info: " has joined",
       })
       client.emit("back-up", messages)
 
       client.on("message", (message) => {
-        const newMessage = { date: new Date(), user, isManager, message }
+        const newMessage = { date: new Date(), user, manager, message }
         messages.push(newMessage)
         socket.sockets.emit("message", newMessage)
       })
@@ -25,7 +25,7 @@ module.exports = (http) => {
         client.broadcast.emit("info", {
           date: new Date(),
           user,
-          isManager,
+          manager,
           info: " has left",
         })
       )

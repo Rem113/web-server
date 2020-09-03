@@ -81,7 +81,7 @@ module.exports = {
   },
 
   GetDeliverers: async (req, res) => {
-    const users = await User.find({ isManager: false })
+    const users = await User.find({ manager: false })
 
     return res.status(200).json(users)
   },

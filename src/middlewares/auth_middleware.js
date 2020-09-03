@@ -35,7 +35,7 @@ const Authenticate = async (req, res, next) => {
 }
 
 const IsManager = async (req, res, next) => {
-  if (req.user.isManager === false)
+  if (req.user.manager === false)
     return res.status(403).end("You must be a manager")
 
   next()

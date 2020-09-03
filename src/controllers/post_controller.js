@@ -14,7 +14,7 @@ const validateRegisterInput = ({ title, content }) => {
 
 module.exports = {
   WritePost: async (req, res) => {
-    if (req.user.isManager === false) return res.status(403).end()
+    if (req.user.manager === false) return res.status(403).end()
 
     const errors = validateRegisterInput(req.body)
 
