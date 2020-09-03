@@ -36,12 +36,12 @@ module.exports = {
 
     if (errors) return res.status(400).json(errors)
 
-    const deliveryData = {}
+    const data = {}
 
     // Figure out the locations
     const { addresses } = req.body
 
-    deliveryData.addresses = await Promise.all(
+    data.addresses = await Promise.all(
       addresses.map((address) =>
         getFromAddress(address).then(({ coordinates: [lat, lon] }) => ({
           lat,
@@ -53,7 +53,7 @@ module.exports = {
     // Delivery dates
     const { dates } = req.body
 
-    deliveryData.dates =
+    data.dates =
       dates === undefined
         ? [createDate()]
         : dates.map((date) => createDate(date))
@@ -61,26 +61,24 @@ module.exports = {
     // Additional info
     const { food, medicine } = req.body
 
-    deliveryData.food = food
-    deliveryData.medicine = medicine
+    data.food = food
+    data.medicine = medicine
 
     // Create addresses x dates deliveries
     const created = []
 
-    for (const address of deliveryData.addresses)
-      for (const date of deliveryData.dates)
+    for (const address of data.addresses)
+      for (const date of data.dates)
         created.push(
           Delivery.create({
             address,
             date,
-            food: deliveryData.food,
-            medicine: deliveryData.medicine,
+            food: data.food,
+            medicine: data.medicine,
           })
         )
 
-    const result = await Promise.all(created)
-
-    return res.status(201).json(result)
+    return res.status(201).json(await Promise.all(created))
   },
 
   GetDeliverers: async (req, res) => {
