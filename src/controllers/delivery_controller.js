@@ -102,8 +102,10 @@ module.exports = {
 
     // Calculate centroids
     const data = deliveries.map(({ address }) => [address.lat, address.lon])
+    // k must be lower than the number of samples
+    const k = data.length > deliverers.length ? deliverers.length : data.length
 
-    const result = skmeans(data, deliverers.length)
+    const result = skmeans(data, k)
 
     // Update deliveries
     deliveries.forEach(
@@ -122,5 +124,13 @@ module.exports = {
     const user = await User.findByIdAndUpdate(id, req.body)
 
     return res.status(200).json(user)
+  },
+
+  GetDeliveriesForDeliverer: async (req, res) => {
+    const { id } = req.params
+
+    const deliveries = await Delivery.find({ deliverer: id, done: false })
+
+    return res.status(200).json(deliveries)
   },
 }

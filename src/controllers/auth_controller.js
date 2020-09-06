@@ -82,7 +82,7 @@ module.exports = {
 
     return res
       .status(200)
-      .json({ token, name: user.name, manager: user.manager })
+      .json({ token, id: user.id, name: user.name, manager: user.manager })
   },
 
   PromoteToManager: async (req, res) => {

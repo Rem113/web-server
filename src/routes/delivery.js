@@ -18,5 +18,10 @@ router.put(
   DeliveryController.DispatchDeliveries
 )
 router.put("/:id", Authenticate, IsManager, DeliveryController.UpdateDeliverer)
+router.get(
+  "/deliverer/:id",
+  Authenticate,
+  DeliveryController.GetDeliveriesForDeliverer
+)
 
 module.exports = router
