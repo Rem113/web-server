@@ -4,6 +4,7 @@ const { Authenticate, IsManager } = require("../middlewares/auth_middleware")
 
 const router = Router()
 
+router.get("/", Authenticate, IsManager, DeliveryController.GetDeliveries)
 router.post("/", Authenticate, IsManager, DeliveryController.ScheduleDelivery)
 router.get(
   "/deliverers",
@@ -23,5 +24,6 @@ router.get(
   Authenticate,
   DeliveryController.GetDeliveriesForDeliverer
 )
+router.put("/:id/done", Authenticate, DeliveryController.MarkDeliveryAsDone)
 
 module.exports = router
