@@ -143,6 +143,12 @@ module.exports = {
     return res.status(200).json(deliveries)
   },
 
+  GetAllDeliveries: async (req, res) => {
+    const deliveries = await Delivery.find({})
+    return res.status(200).json(deliveries)
+  },
+
+
   MarkDeliveryAsDone: async (req, res) => {
     const userId = req.user.id
     const deliveryId = req.params.id

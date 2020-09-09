@@ -5,6 +5,7 @@ const { Authenticate, IsManager } = require("../middlewares/auth_middleware")
 const router = Router()
 
 router.get("/", Authenticate, IsManager, DeliveryController.GetDeliveries)
+router.get("/all", Authenticate, IsManager, DeliveryController.GetAllDeliveries)
 router.post("/", Authenticate, IsManager, DeliveryController.ScheduleDelivery)
 router.get(
   "/deliverers",

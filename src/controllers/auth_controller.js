@@ -94,6 +94,6 @@ module.exports = {
 
     await User.save(user)
 
-    return res.status(200).end()
+    return res.status(200).end("OK !")
   },
 }
