@@ -148,16 +148,11 @@ module.exports = {
     return res.status(200).json(deliveries)
   },
 
-
   MarkDeliveryAsDone: async (req, res) => {
     const userId = req.user.id
     const deliveryId = req.params.id
 
-    console.log(userId)
-
     const delivery = await Delivery.findById(deliveryId)
-
-    console.log(delivery.deliverer)
 
     // Value equality because deliverer is an ObjectID while userId is a String
     if (delivery.deliverer != userId)
