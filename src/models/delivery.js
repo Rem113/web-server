@@ -4,6 +4,7 @@ const AddressSchema = Schema({
   _id: false,
   lat: { type: Number, required: true },
   lon: { type: Number, required: true },
+  address: { type: String, required: false }
 })
 
 const DeliverySchema = Schema({

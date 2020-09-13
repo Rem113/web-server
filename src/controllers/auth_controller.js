@@ -1,9 +1,10 @@
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
+const { getFromAddress } = require("../services/address_converter")
 
 const User = require("../models/user")
 
-const validateRegisterInput = ({ email, password, name, age }) => {
+const validateRegisterInput = ({ email, password, name, age, address }) => {
   const errors = {}
 
   if (email === undefined || email === "")
@@ -15,6 +16,9 @@ const validateRegisterInput = ({ email, password, name, age }) => {
   if (name === undefined || name === "") errors.name = "Name cannot be empty"
 
   if (age === undefined || age < 0) errors.age = "Age cannot be empty"
+
+  if (address === undefined || address === "")
+    errors.address = "Address cannot be empty"
 
   return Object.keys(errors).length > 0 ? errors : null
 }
@@ -36,6 +40,8 @@ module.exports = {
     // Validate input
     const errors = validateRegisterInput(req.body)
 
+    const labeledAddress = await getFromAddress(req.body.address)
+
     if (errors !== null) return res.status(400).json(errors)
 
     // Check if the email is available
@@ -50,7 +56,7 @@ module.exports = {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
-    const user = await User.create({ ...req.body, password: hashedPassword })
+    const user = await User.create({ ...req.body, password: hashedPassword, address: { lat: labeledAddress.coordinates[0], lon: labeledAddress.coordinates[1], address: labeledAddress.address } })
 
     return res.status(201).json({ id: user.id })
   },

@@ -9,4 +9,5 @@ module.exports = (app) => {
   app.use("/api/auth", require("../routes/auth"))
   app.use("/api/delivery", require("../routes/delivery"))
   app.use("/api/post", require("../routes/post"))
+  app.use("/api/services", require("../routes/services"))
 }
