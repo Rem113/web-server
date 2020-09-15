@@ -45,10 +45,7 @@ module.exports = {
 
     data.addresses = await Promise.all(
       addresses.map((address) =>
-        getFromAddress(address).then(({ coordinates: [lat, lon] }) => ({
-          lat,
-          lon,
-        }))
+        getFromAddress(address).then((r) => {r.coordinates, r.address})
       )
     )
 
