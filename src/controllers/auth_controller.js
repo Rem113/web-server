@@ -56,7 +56,15 @@ module.exports = {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
-    const user = await User.create({ ...req.body, password: hashedPassword, address: { lat: labeledAddress.coordinates[0], lon: labeledAddress.coordinates[1], address: labeledAddress.address } })
+    const user = await User.create({
+      ...req.body,
+      password: hashedPassword,
+      address: {
+        lat: labeledAddress.coordinates[0],
+        lon: labeledAddress.coordinates[1],
+        address: labeledAddress.address,
+      },
+    })
 
     return res.status(201).json({ id: user.id })
   },
@@ -98,7 +106,7 @@ module.exports = {
 
     user.manager = true
 
-    await User.save(user)
+    await user.save()
 
     return res.status(200).end("OK !")
   },

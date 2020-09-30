@@ -45,7 +45,10 @@ module.exports = {
 
     data.addresses = await Promise.all(
       addresses.map((address) =>
-        getFromAddress(address).then((r) => {r.coordinates, r.address})
+        getFromAddress(address).then(({ coordinates: [lat, lon] }) => ({
+          lat,
+          lon,
+        }))
       )
     )
 
@@ -84,6 +87,7 @@ module.exports = {
   },
 
   DispatchDeliveries: async (req, res) => {
+    const { ids } = req.body
     const today = createDate()
 
     // Get deliveries for today
@@ -94,6 +98,9 @@ module.exports = {
 
     // Get deliverers
     const deliverers = await User.find({
+      _id: {
+        $in: ids,
+      },
       manager: false,
     })
 
