@@ -6,7 +6,7 @@
   "author": "Hillel Saal & Gabriel Elbaz",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon server"
+    "start": "nodemon src/server"
   },
   "dependencies": {
     "axios": "^0.19.2",
